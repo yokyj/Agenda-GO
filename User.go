@@ -99,26 +99,44 @@ func ListUsers() (string, error) {
 	outputStr := ""
 	appendStr := ""
 	i := 1
-	fmt.Sprintf(appendStr, "%-5s  %-10s  %-15s  %-10s\n",
+	// 输出标题
+	appendStr = fmt.Sprintf("%-7s|%-12s|%-17s|%-12s\n",
 		"No", "Name", "Email", "Phone")
 	outputStr += appendStr
+	// 依次输出map中的所有值
 	for _, user := range userItems {
-		fmt.Sprintf(appendStr, "%-5d  %-10s  %-15s  %-10s\n",
+		appendStr = fmt.Sprintf("%-7s|%-12s|%-17s|%-12s\n",
 			i, user.name, user.email, user.phoneNumber)
+		outputStr += appendStr
+		i++
 	}
-
-	outputStr += "All user listed as follow:"
+	// 输出结尾
+	outputStr += "All user listed as follow.\n"
+	return outputStr, nil
 }
 
 // 删除当前登录用户，删除后当前登录用户置为nil
 // 如果当前没有用户登录，返回err
-func DeleteUser() error {}
+func DeleteUser() error {
+  if !IsLogin() {
+    return errors.new("No registered user!")
+  }
+
+  delete(userItems, CurrentUser.name)
+  CurrentUser = nil
+  return nil
+}
 
 // 判断当前姓名的用户是否注册
-func IsRegisteredUser(name string) bool {}
+func IsRegisteredUser(name string) bool {
+  _, ok = userItems[name]
+  return ok
+}
 
 // 得到当前已登录用户的姓名，如果没有登录，返回""
-func GetLogonUsername() string {}
+func GetLogonUsername() string {
+  return CurrentUser != nil ? CurrentUser.name : ""
+}
 
 func readJson() {
 
