@@ -10,8 +10,8 @@ import (
 	"os"
 )
 
-const userItemsFilePath string = "Json/UserItems.json"
-const currentUserFilePath string = "Json/Current.txt"
+const userItemsFilePath string = "data/UserItems.json"
+const currentUserFilePath string = "data/Current.txt"
 
 type userItem struct {
 	// 用户名字
@@ -50,12 +50,12 @@ func IsLogInOutTest() {
 }
 func RegisterUserTest() {
 	fmt.Println("Test RegisterUser():")
-	err := RegisterUser("huziang", "123456", "3254266353@qq.com", "13719316539")
+	err := RegisterUser("DJG", "123456", "3254266353@qq.com", "13719316539")
 	fmt.Println(err)
-	err = RegisterUser("houhongxiao", "123645", "325423@qq.com", "12321331213")
-	fmt.Println(err)
-	LoginUser("huziang", "123456")
-	ListUsers()
+	//err = RegisterUser("houhongxiao", "123645", "325423@qq.com", "12321331213")
+	//fmt.Println(err)
+	//LoginUser("DJG", "123456")
+	//ListUsers()
 }
 
 func IsRegisteredUserTest() {
@@ -234,8 +234,11 @@ func writeJSON() {
 	}
 
 	// 写入CurrentUser
+
 	if CurrentUser == nil {
-		os.Remove(currentUserFilePath)
+		if _, err := os.Open(currentUserFilePath); err == nil {
+			os.Remove(currentUserFilePath)
+		}
 		return
 	}
 	b2, err2 := json.Marshal(*CurrentUser)
@@ -245,4 +248,5 @@ func writeJSON() {
 		}
 		ioutil.WriteFile(currentUserFilePath, b2, 0644)
 	}
+
 }
