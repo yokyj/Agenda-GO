@@ -1,4 +1,4 @@
-package User
+package user
 
 import (
 	"crypto/md5"
@@ -70,6 +70,7 @@ func RegisterUser(name string, password string,
 		return errors.New("ERROR:The user has registered")
 	}
 	userItems[name] = *newUser(name, password, email, phoneNumber)
+	writeJSON()
 	return nil
 }
 
@@ -137,6 +138,7 @@ func DeleteUser() error {
 	}
 
 	delete(userItems, CurrentUser.name)
+	writeJSON()
 	CurrentUser = nil
 	return nil
 }
