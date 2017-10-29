@@ -4,14 +4,13 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-
-	user "user"
+	"user"
 )
 
 const tempFilePath = "temp.txt"
 
 func main() {
-	input := "123321"
+	//input := "123321"
 	//fmt.Println("111")
 	fmt.Print(user.IsLogin())
 }
