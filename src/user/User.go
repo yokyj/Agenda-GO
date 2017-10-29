@@ -33,10 +33,10 @@ func init() {
 }
 
 func main() {
-	fmt.Println("can enter?")
 	//IsLogInOutTest()
-	RegisterUserTest()
-	IsRegisteredUserTest()
+	//RegisterUserTest()
+	//IsRegisteredUserTest()
+	DeleteUserTest()
 }
 
 func IsLogInOutTest() {
@@ -58,6 +58,16 @@ func RegisterUserTest() {
 func IsRegisteredUserTest() {
 	fmt.Println("Test IsRegisteredUser():")
 	fmt.Println(IsRegisteredUser("houhongxiao"))
+}
+
+func DeleteUserTest() {
+	err := LoginUser("huziang", "123456")
+	fmt.Println(err)
+	DeleteUser()
+	err = LoginUser("houhongxiao", "123645")
+	fmt.Println(err)
+	ListUsers()
+	LogoutUser()
 }
 
 // 新建一个userItem，并返回指针
@@ -221,6 +231,7 @@ func writeJSON() {
 
 	// 写入CurrentUser
 	if CurrentUser == nil {
+		os.Remove(currentUserFilePath)
 		return
 	}
 	b2, err2 := json.Marshal(*CurrentUser)
