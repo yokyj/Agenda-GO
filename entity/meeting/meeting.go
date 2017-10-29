@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"time"
+	"Agenda-GO/user"
 )
 
 type meeting_records struct {
@@ -20,7 +21,7 @@ type meeting_records struct {
 var meetings []meeting_records
 var curUser string
 var isFileExist = true
-var writeFilePath = "./MeetingInfo.json"
+var writeFilePath = "./Json/MeetingInfo.json"
 
 //Meeting comment
 /*
@@ -101,68 +102,80 @@ func CreateMeeting(title string, participator []string, startTime time.Time, end
 	fmt.Println("0:meetingtoadd", meetingToAdd)
 	meetings = append(meetings, meetingToAdd)
 	fmt.Println("1:\n", meetings)
+	WriteMeetingInfo()
 	return nil
 }
 
-//ChangeMeetingParticipators 增删会议参与者
-func ChangeMeetingParticipators(title string, participator []string, action int) error {
+//AddMeetingParticipators 增加会议参与者
+func AddMeetingParticipators(title string, participator []string) error {
 	var isMeetingExist = 0
 	for i := 0; i < len(meetings); i++ {
 		if meetings[i].Title == title {
 			//添加会议参与者
-			if action == 1 {
-				for j := 0; j < len(meetings[i].Participator); j++ {
-					for k := 0; k < len(participator); k++ {
-						if meetings[i].Participator[j] == participator[k] {
-							return errors.New("此title的会议已经有参与者")
-						}
-					}
-				}
-				//会议是否被注册处要修改
-				//还要做时间重叠判断（允许仅有端点重叠的情况）
-				isOverlap := checkIfTwoMeetingTimeOverlap(title, participator, meetings[i].StartTime, meetings[i].EndTime)
-				if isOverlap == 2 {
-					return errors.New("新增会议参与者和某个会议时间冲突")
-				}
-				for j := 0; j < len(participator); j++ {
-					meetings[i].Participator = append(meetings[i].Participator, participator[j])
-				}
-			} else {
-				//删除会议参与者
-				var NumToDelete int
-				NumToDelete = 0
-				for j := 0; j < len(meetings[i].Participator); j++ {
-					for k := 0; k < len(participator); k++ {
-						if meetings[i].Participator[j] == participator[k] {
-							NumToDelete++
-						}
-					}
-				}
-				if NumToDelete < len(participator) {
-					return errors.New("将要删除的用户不存在")
-				}
-				//删除用户
-				var partAfterDelete []string
-				partAfterDelete = meetings[i].Participator
+			for j := 0; j < len(meetings[i].Participator); j++ {
 				for k := 0; k < len(participator); k++ {
-					for j := 0; j < len(meetings[i].Participator); j++ {
-						if meetings[i].Participator[j] == participator[k] {
-							partAfterDelete = append(partAfterDelete[:j], partAfterDelete[j+1:]...)
-						}
+					if meetings[i].Participator[j] == participator[k] {
+						return errors.New("此title的会议已经有此参与者")
 					}
 				}
-				//如果删除参与者后会议人数为0，删除该会议
-				if len(partAfterDelete) == 0 {
-					CancelMeeting(title)
-				} else {
-					meetings[i].Participator = partAfterDelete
-				}
+			}
+			//会议是否被注册处要修改
+			//还要做时间重叠判断（允许仅有端点重叠的情况）
+			isOverlap := checkIfTwoMeetingTimeOverlap(title, participator, meetings[i].StartTime, meetings[i].EndTime)
+			if isOverlap == 2 {
+				return errors.New("新增会议参与者和某个会议时间冲突")
+			}
+			for j := 0; j < len(participator); j++ {
+				meetings[i].Participator = append(meetings[i].Participator, participator[j])
 			}
 		}
 	}
 	if isMeetingExist == 0 {
 		return errors.New("此title的会议不存在")
 	}
+	WriteMeetingInfo()
+	return nil
+}
+
+//DeleteMeetingParticipators 删除会议参与者
+func DeleteMeetingParticipators(title string, participator []string) error {
+	var isMeetingExist = 0
+	for i := 0; i < len(meetings); i++ {
+		if meetings[i].Title == title {
+			var NumToDelete int
+			NumToDelete = 0
+			for j := 0; j < len(meetings[i].Participator); j++ {
+				for k := 0; k < len(participator); k++ {
+					if meetings[i].Participator[j] == participator[k] {
+						NumToDelete++
+					}
+				}
+			}
+			if NumToDelete < len(participator) {
+				return errors.New("将要删除的用户不存在")
+			}
+			//删除用户
+			var partAfterDelete []string
+			partAfterDelete = meetings[i].Participator
+			for k := 0; k < len(participator); k++ {
+				for j := 0; j < len(meetings[i].Participator); j++ {
+					if meetings[i].Participator[j] == participator[k] {
+						partAfterDelete = append(partAfterDelete[:j], partAfterDelete[j+1:]...)
+					}
+				}
+			}
+			//如果删除参与者后会议人数为0，删除该会议
+			if len(partAfterDelete) == 0 {
+				CancelMeeting(title)
+			} else {
+				meetings[i].Participator = partAfterDelete
+			}
+		}
+	}
+	if isMeetingExist == 0 {
+		return errors.New("此title的会议不存在")
+	}
+	WriteMeetingInfo()
 	return nil
 }
 
@@ -206,6 +219,7 @@ func CancelMeeting(title string) error {
 	if isMeetingExist == 0 {
 		return errors.New("此主题的会议不存在")
 	}
+	WriteMeetingInfo()
 	return nil
 }
 
@@ -235,6 +249,7 @@ func QuitMeeting(title string) error {
 	if isAttendMeeting == 0 {
 		return errors.New("你并没有参加此会议")
 	}
+	WriteMeetingInfo()
 	return nil
 }
 
@@ -246,6 +261,7 @@ func ClearAllMeeting() {
 			i--
 		}
 	}
+	WriteMeetingInfo()
 }
 
 //WriteMeetingInfo 将会议信息以JSON格式写入文件
@@ -290,7 +306,7 @@ func init() {
 			meetings[i].participator = make([]string, 5)
 		}
 	*/
-	curUser = "xxx"
+	curUser = user.GetLogonUsername()
 	_, err2 := os.Stat(writeFilePath)
 	if err2 == nil {
 		data, err := ioutil.ReadFile(writeFilePath)
@@ -308,5 +324,5 @@ func init() {
 			fmt.Println(errors.New("保存会议信息的文件打开失败"))
 		}
 	}
-	fmt.Println("readfile:\n", meetings)
+	//fmt.Println("readfile:\n", meetings)
 }

@@ -17,8 +17,10 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 	"github.com/spf13/cobra"
 	"Agenda-GO/entity/meeting"
+	"Agenda-GO/user"
 )
 
 // mcCmd represents the mc command
@@ -35,7 +37,7 @@ var mcCmd = &cobra.Command{
 		participators, _ := cmd.Flags().GetStringArray("parti")
 		stime, _ := cmd.Flags().GetString("stime")
 		etime, _ := cmd.Flags().GetString("etime")
-		if  !IsLogin() {
+		if  !user.IsLogin() {
 			fmt.Println("Login first!")
 			os.Exit(1)
 		}
@@ -51,7 +53,9 @@ var mcCmd = &cobra.Command{
 			fmt.Println("etime can not be blank")
 			os.Exit(4)
 		}
-		if err := CreateMeeting(title, participator, stime, etime); err != nil {
+		t1,_ := time.Parse("2006-01-02 15:04:05", stime)
+		t2,_ := time.Parse("2006-01-02 15:04:05", etime)
+		if err := meeting.CreateMeeting(title, participators, t1, t2); err != nil {
 			fmt.Println(err)
 			os.Exit(5)
 		}

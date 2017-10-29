@@ -19,6 +19,7 @@ import (
 	"os"
 	"github.com/spf13/cobra"
 	"Agenda-GO/entity/meeting"
+	"Agenda-GO/user"
 )
 
 // mqCmd represents the mq command
@@ -32,7 +33,7 @@ var mqCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mq called")
 		title, _ := cmd.Flags().GetString("title")
-		if !IsLogin() {
+		if !user.IsLogin() {
 			fmt.Println("Please login first!")
 			os.Exit(1)
 		}
@@ -40,7 +41,7 @@ var mqCmd = &cobra.Command{
 			fmt.Println("title can not be blank!")
 			os.Exit(2)
 		}
-		if err := QuitMeeting(title); err != nil {
+		if err := meeting.QuitMeeting(title); err != nil {
 			fmt.Println(err)
 			os.Exit(3)
 		}
@@ -60,4 +61,3 @@ func init() {
 	// is called directly, e.g.:
 	mqCmd.Flags().StringP("title", "t", "", "the title of the meeting you wanna quit")
 }
-*/

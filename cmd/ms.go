@@ -17,8 +17,10 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 	"github.com/spf13/cobra"
 	"Agenda-GO/entity/meeting"
+	"Agenda-GO/user"
 )
 
 // msCmd represents the ms command
@@ -33,7 +35,7 @@ var msCmd = &cobra.Command{
 		fmt.Println("ms called")
 		stime, _ := cmd.Flags().GetString("stime")
 		etime, _ := cmd.Flags().GetString("etime")
-		if !IsLogin() {
+		if !user.IsLogin() {
 			fmt.Println("Please login first!")
 			os.Exit(1)
 		}
@@ -45,7 +47,9 @@ var msCmd = &cobra.Command{
 			fmt.Println("endtime can not be blank.The format is 2017-01-01 09:00")
 			os.Exit(3)
 		}
-		if err := QueryMeeting(stime, etime); err != nil {
+		t1,_ := time.Parse("2006-01-02 15:04:05", stime)
+		t2,_ := time.Parse("2006-01-02 15:04:05", etime)
+		if err := meeting.QueryMeeting(t1, t2); err != nil {
 			fmt.Println(err)
 			os.Exit(4)
 		}

@@ -19,6 +19,7 @@ import (
 	"os"
 	"github.com/spf13/cobra"
 	"Agenda-GO/entity/meeting"
+	"Agenda-GO/user"
 )
 
 // dpCmd represents the dp command
@@ -34,7 +35,7 @@ var dpCmd = &cobra.Command{
 		fmt.Println("dp called")
 		title, _ := cmd.Flags().GetString("title")
 		participators, _ := cmd.Flags().GetStringArray("parti")
-		if  !IsLogin() {
+		if  !user.IsLogin() {
 			fmt.Println("you have not logined yet")
 			os.Exit(1)
 		}
@@ -42,7 +43,7 @@ var dpCmd = &cobra.Command{
 			fmt.Println("please input title")
 			os.Exit(2)
 		}
-		if err := DeleteMeetingParticipators(); err != nil {
+		if err := meeting.DeleteMeetingParticipators(title, participators); err != nil {
 			fmt.Println(err)
 			os.Exit(3)
 		}
