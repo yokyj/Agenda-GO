@@ -10,9 +10,8 @@ import (
 	"os"
 )
 
-const userItemsFilePath string = "./UserItems.json"
-const currentUserFilePath string = "Current.txt"
-const md5ExePath string = "./MD5"
+const userItemsFilePath string = "Json/UserItems.json"
+const currentUserFilePath string = "Json/Current.txt"
 
 type userItem struct {
 	// 用户名字
@@ -32,11 +31,13 @@ func init() {
 	readJSON()
 }
 
+// 测试部分
+/*
 func main() {
 	//IsLogInOutTest()
-	//RegisterUserTest()
+	RegisterUserTest()
 	//IsRegisteredUserTest()
-	DeleteUserTest()
+	//DeleteUserTest()
 }
 
 func IsLogInOutTest() {
@@ -49,9 +50,11 @@ func IsLogInOutTest() {
 }
 func RegisterUserTest() {
 	fmt.Println("Test RegisterUser():")
-	//RegisterUser("huziang", "123456", "3254266353@qq.com", "13719316539")
-	//RegisterUser("houhongxiao", "123645", "325423@qq.com", "12321331213")
-	//err := LoginUser("huziang", "123456")
+	err := RegisterUser("huziang", "123456", "3254266353@qq.com", "13719316539")
+	fmt.Println(err)
+	err = RegisterUser("houhongxiao", "123645", "325423@qq.com", "12321331213")
+	fmt.Println(err)
+	LoginUser("huziang", "123456")
 	ListUsers()
 }
 
@@ -69,6 +72,7 @@ func DeleteUserTest() {
 	ListUsers()
 	LogoutUser()
 }
+*/
 
 // 新建一个userItem，并返回指针
 func newUser(name string, password string,
