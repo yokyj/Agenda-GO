@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+	"Agenda-GO/user"
 )
 
 // usrSchCmd represents the usrSch command
@@ -32,12 +33,12 @@ var usrSchCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		
 		fmt.Println("usrSch called")
-		if !IsLogin() {
+		if !user.IsLogin() {
 			fmt.Println("please login first!")
 			os.Exit(1)
 		}
-		if err := ListUsers(); err != nil {
-
+		if err := user.ListUsers(); err != nil {
+			fmt.Println(err)
 			os.Exit(2)
 		}
 		

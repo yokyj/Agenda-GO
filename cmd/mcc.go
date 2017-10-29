@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+	"Agenda-GO/entity/meeting"
 )
 
 // mccCmd represents the mcc command
@@ -40,7 +41,7 @@ For example:
 			os.Exit(2)
 		}
 		if err := CancelMeeting(title); err != nil {
-
+			fmt.Println(err)
 			os.Exit(3)
 		}
 	},

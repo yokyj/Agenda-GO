@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"fmt"
-
+	"Agenda-GO/user"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -40,7 +40,7 @@ var registerCmd = &cobra.Command{
 			fmt.Println("username can not be blank.")
 			os.Exit(1)
 		}
-		if IsRegisterUser(username) {
+		if user.IsRegisteredUser(username) {
 			fmt.Println("this username has existed.")
 			os.Exit(2)
 		}
@@ -56,11 +56,11 @@ var registerCmd = &cobra.Command{
 			fmt.Println("phone number can not be blank.")
 			os.Exit(5)
 		}
-		if err := RegisterUser(username, password, email, phone); err != nil {
-			
+		if err := user.RegisterUser(username, password, email, phone); err != nil {
+			fmt.Println(err)
 			os.Exit(6)
 		} 
-		fmt.Println("a new account is registered named by" + username)
+		fmt.Println("a new account is registered named by " + username)
 
 	},
 }

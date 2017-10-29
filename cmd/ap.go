@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+	"Agenda-GO/entity/meeting"
 )
 
 // apCmd represents the ap command
@@ -42,7 +43,7 @@ var apCmd = &cobra.Command{
 			os.Exit(2)
 		}
 		if err := AddMeetingParticipators(); err != nil {
-			
+			fmt.Println(err)
 			os.Exit(3)
 		}
 	},

@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+	"Agenda-GO/entity/meeting"
 )
 
 // mqCmd represents the mq command
@@ -40,7 +41,7 @@ var mqCmd = &cobra.Command{
 			os.Exit(2)
 		}
 		if err := QuitMeeting(title); err != nil {
-
+			fmt.Println(err)
 			os.Exit(3)
 		}
 	},
@@ -59,3 +60,4 @@ func init() {
 	// is called directly, e.g.:
 	mqCmd.Flags().StringP("title", "t", "", "the title of the meeting you wanna quit")
 }
+*/

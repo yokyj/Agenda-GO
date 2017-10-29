@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+	"Agenda-GO/entity/meeting"
 )
 
 // mcCmd represents the mc command
@@ -51,7 +52,7 @@ var mcCmd = &cobra.Command{
 			os.Exit(4)
 		}
 		if err := CreateMeeting(title, participator, stime, etime); err != nil {
-			
+			fmt.Println(err)
 			os.Exit(5)
 		}
 		//MeetingCreate(title, participators, stime, etime)

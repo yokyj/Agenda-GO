@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+	"Agenda-GO/entity/meeting"
 )
 
 // mclrCmd represents the mclr command
@@ -35,7 +36,7 @@ var mclrCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		if err := ClearAllMeeting(); err != nil {
-			
+			fmt.Println(err)
 			os.Exit(2)
 		}
 	},

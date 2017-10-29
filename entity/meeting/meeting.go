@@ -17,15 +17,6 @@ type meeting_records struct {
 	EndTime      time.Time
 }
 
-/*
-type write_meeting_records struct {
-	title        string
-	host         string
-	participator []string
-	startTime    string
-	endTime      string
-}
-*/
 var meetings []meeting_records
 var curUser string
 var isFileExist = true
@@ -259,21 +250,9 @@ func ClearAllMeeting() {
 
 //WriteMeetingInfo 将会议信息以JSON格式写入文件
 func WriteMeetingInfo() {
-	//var write_meetings []write_meeting_records
-	//var this_meetings write_meeting_records
 	fmt.Println("2:\n", meetings)
 	fmt.Println("len:", len(meetings), "cap:", cap(meetings))
-	/*
-		for i := 0; i < len(meetings); i++ {
-			this_meetings.title = meetings[i].title
-			this_meetings.participator = meetings[i].participator
-			this_meetings.host = meetings[i].host
-			this_meetings.startTime = meetings[i].startTime.Format("2006-01-02 15:04:05")
-			this_meetings.endTime = meetings[i].endTime.Format("2006-01-02 15:04:05")
-			write_meetings = append(write_meetings, this_meetings)
-		}
-		fmt.Println("write_meetings", write_meetings)
-	*/
+
 	b, err := json.Marshal(meetings)
 	if err != nil {
 		panic(err)
@@ -297,6 +276,11 @@ func WriteMeetingInfo() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+//SetCurrentUser 设置当前用户
+func SetCurrentUser(currentUser string) {
+	curUser = currentUser
 }
 
 func init() {

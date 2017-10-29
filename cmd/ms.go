@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+	"Agenda-GO/entity/meeting"
 )
 
 // msCmd represents the ms command
@@ -45,7 +46,7 @@ var msCmd = &cobra.Command{
 			os.Exit(3)
 		}
 		if err := QueryMeeting(stime, etime); err != nil {
-
+			fmt.Println(err)
 			os.Exit(4)
 		}
 	},

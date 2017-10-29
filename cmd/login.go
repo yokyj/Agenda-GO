@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+	"Agenda-GO/user"
 )
 
 // loginCmd represents the login command
@@ -31,7 +32,7 @@ var loginCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		username, _ := cmd.Flags().GetString("user")
 		password, _ := cmd.Flags().GetString("password")
-		if IsLogin() {
+		if user.IsLogin() {
 			fmt.Println("You have already logined.Please logout first.")
 			os.Exit(1)
 		}
@@ -40,18 +41,19 @@ var loginCmd = &cobra.Command{
 			os.Exit(2)
 		}
 		if password == "" {
-			fmt.Printfln("please input your password")
+			fmt.Println("please input your password")
 			os.Exit(3)
 		}
-		if !IsRegisterUser(username) {
-			fmt.Println("this account is not registered.")
+		if !user.IsRegisteredUser(username) {
+			fmt.Println(username +" is not registered.")
 			os.Exit(4)
 		}
-		if err := LoginUser(username, password); err != nil {
+		if err := user.LoginUser(username, password); err != nil {
 			//fmt.Println("the password is wrong.")
+			fmt.Println(err)
 			os.Exit(5)
 		}
-		fmt.Println(username + "is logined")
+		fmt.Println(username + " is logined")
 	},
 }
 

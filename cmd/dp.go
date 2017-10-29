@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+	"Agenda-GO/entity/meeting"
 )
 
 // dpCmd represents the dp command
@@ -42,7 +43,7 @@ var dpCmd = &cobra.Command{
 			os.Exit(2)
 		}
 		if err := DeleteMeetingParticipators(); err != nil {
-			
+			fmt.Println(err)
 			os.Exit(3)
 		}
 	},
