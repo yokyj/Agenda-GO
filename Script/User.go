@@ -1,6 +1,8 @@
 package User
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -23,6 +25,7 @@ type userItem struct {
 }
 
 func init() {
+	// 初始化
 	userItems = make(map[string](userItem))
 	CurrentUser = nil
 	readJSON()
@@ -40,9 +43,12 @@ func newUser(name string, password string,
 }
 
 // 用于密码hash的函数
-func hashFunc(password string) string {
-
-	return password
+func hashFunc(hashString string) string {
+	// 进行md5加密
+	h := md5.New()
+	h.Write([]byte(hashString))
+	cipherStr := h.Sum(nil)
+	return hex.EncodeToString(cipherStr)
 }
 
 // 储存user的map集合
@@ -89,8 +95,7 @@ func LoginUser(name string, password string) error {
 }
 
 // LogoutUser : 登出用户，如果当前没有用户登录，则返回err
-func LogoutUser() error {huziang@huziang-ThinkPad-E450c:~$ cd 桌面
-
+func LogoutUser() error {
 	if !IsLogin() {
 		return errors.New("ERROR:No registered user")
 	}
