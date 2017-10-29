@@ -10,9 +10,10 @@ import (
 const tempFilePath = "temp.txt"
 
 func main() {
-	//input := "123321"
+	input := "123321"
 	//fmt.Println("111")
 	fmt.Print(user.IsLogin())
+	fmt.Scanf("%s", input)
 }
 
 func hashFunc(hashString string) string {

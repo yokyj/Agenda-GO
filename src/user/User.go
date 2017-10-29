@@ -1,4 +1,4 @@
-package user
+package main
 
 import (
 	"crypto/md5"
@@ -7,21 +7,22 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"os"
 )
 
-const userItemsFilePath string = "User.json"
+const userItemsFilePath string = "./UserItems.json"
 const currentUserFilePath string = "Current.txt"
 const md5ExePath string = "./MD5"
 
 type userItem struct {
 	// 用户名字
-	name string
+	Name string
 	// hash过的密码
-	hashPassword string
+	HashPassword string
 	// 注册用的邮箱
-	email string
+	Email string
 	// 注册用的电话号码
-	phoneNumber string
+	PhoneNumber string
 }
 
 func init() {
@@ -31,14 +32,42 @@ func init() {
 	readJSON()
 }
 
+func main() {
+	fmt.Println("can enter?")
+	//IsLogInOutTest()
+	RegisterUserTest()
+	IsRegisteredUserTest()
+}
+
+func IsLogInOutTest() {
+	fmt.Println("Test IsLogin():")
+	fmt.Println(IsLogin())
+	LoginUser("huziang", "123456")
+	fmt.Println(IsLogin())
+	LogoutUser()
+	fmt.Println(IsLogin())
+}
+func RegisterUserTest() {
+	fmt.Println("Test RegisterUser():")
+	//RegisterUser("huziang", "123456", "3254266353@qq.com", "13719316539")
+	//RegisterUser("houhongxiao", "123645", "325423@qq.com", "12321331213")
+	//err := LoginUser("huziang", "123456")
+	ListUsers()
+}
+
+func IsRegisteredUserTest() {
+	fmt.Println("Test IsRegisteredUser():")
+	fmt.Println(IsRegisteredUser("houhongxiao"))
+}
+
 // 新建一个userItem，并返回指针
 func newUser(name string, password string,
 	email string, phoneNumber string) *userItem {
 	newItem := new(userItem)
-	newItem.name = name
-	newItem.hashPassword = hashFunc(password)
-	newItem.email = email
-	newItem.phoneNumber = phoneNumber
+	newItem.Name = name
+	newItem.HashPassword = hashFunc(password)
+	newItem.Email = email
+	newItem.PhoneNumber = phoneNumber
 	return newItem
 }
 
@@ -75,16 +104,19 @@ func RegisterUser(name string, password string,
 }
 
 // LoginUser : 登录用户
-// 如果用户名不存在，则返回err = errors.New("name")
-// 或者用户名密码不正确，则返回err = errors.New("password")
+// 如果用户名不存在，则返回err1
+// 或者用户名密码不正确，则返回err2
 func LoginUser(name string, password string) error {
+	if IsLogin() {
+		return errors.New("ERROR:Please logout at first")
+	}
 	tempUser, nameok := userItems[name]
 	// 账号错误
 	if !nameok {
 		return errors.New("ERROR:The user's name not exists")
 	}
 
-	passwordok := tempUser.hashPassword == hashFunc(password)
+	passwordok := tempUser.HashPassword == hashFunc(password)
 	// 密码错误
 	if !passwordok {
 		return errors.New("ERROR:The user's password is wrong")
@@ -92,6 +124,8 @@ func LoginUser(name string, password string) error {
 
 	// 成功登录
 	CurrentUser = &tempUser
+	writeJSON()
+	fmt.Println("Hi " + name + "!")
 	return nil
 }
 
@@ -102,14 +136,16 @@ func LogoutUser() error {
 	}
 
 	CurrentUser = nil
+	writeJSON()
+	fmt.Println("Logout successfully!")
 	return nil
 }
 
 // ListUsers : 列出当前所有用户名，邮箱，密码并组合成字符串返回
 // 如果当前没有用户登录，返回err
-func ListUsers() (string, error) {
+func ListUsers() error {
 	if !IsLogin() {
-		return "", errors.New("ERROR:No registered user")
+		return errors.New("ERROR:No registered user")
 	}
 
 	outputStr := ""
@@ -121,13 +157,14 @@ func ListUsers() (string, error) {
 	// 依次输出map中的所有值
 	for _, user := range userItems {
 		nextStr := fmt.Sprintf("%-7d|%-12s|%-17s|%-12s\n",
-			i, user.name, user.email, user.phoneNumber)
+			i, user.Name, user.Email, user.PhoneNumber)
 		outputStr += nextStr
 		i++
 	}
 	// 输出结尾
 	outputStr += "All user listed as follow.\n"
-	return outputStr, nil
+	fmt.Printf("%s", outputStr)
+	return nil
 }
 
 // DeleteUser : 删除当前登录用户，删除后当前登录用户置为nil
@@ -137,9 +174,9 @@ func DeleteUser() error {
 		return errors.New("ERROR:No registered user")
 	}
 
-	delete(userItems, CurrentUser.name)
-	writeJSON()
+	delete(userItems, CurrentUser.Name)
 	CurrentUser = nil
+	writeJSON()
 	return nil
 }
 
@@ -154,21 +191,21 @@ func GetLogonUsername() string {
 	if !IsLogin() {
 		return ""
 	}
-	return CurrentUser.name
+	return CurrentUser.Name
 }
 
 func readJSON() {
 	// 解析userItems
 	b1, err1 := ioutil.ReadFile(userItemsFilePath)
 	if err1 == nil {
-		json.Unmarshal(b1, userItems)
+		json.Unmarshal(b1, &userItems)
 	}
 
 	// 解析CurrentUser
 	b2, err2 := ioutil.ReadFile(currentUserFilePath)
 	if err2 == nil {
 		CurrentUser = new(userItem)
-		json.Unmarshal(b2, *CurrentUser)
+		json.Unmarshal(b2, CurrentUser)
 	}
 }
 
@@ -176,6 +213,9 @@ func writeJSON() {
 	// 写入userItems
 	b1, err1 := json.Marshal(userItems)
 	if err1 == nil {
+		if _, err := os.Open(userItemsFilePath); err != nil {
+			os.Create(userItemsFilePath)
+		}
 		ioutil.WriteFile(userItemsFilePath, b1, 0644)
 	}
 
@@ -185,6 +225,9 @@ func writeJSON() {
 	}
 	b2, err2 := json.Marshal(*CurrentUser)
 	if err2 == nil {
-		ioutil.WriteFile(userItemsFilePath, b2, 0644)
+		if _, err := os.Open(currentUserFilePath); err != nil {
+			os.Create(currentUserFilePath)
+		}
+		ioutil.WriteFile(currentUserFilePath, b2, 0644)
 	}
 }
