@@ -15,11 +15,12 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-	"github.com/spf13/cobra"
 	"Agenda-GO/entity/meeting"
 	"Agenda-GO/user"
+	"fmt"
+	"os"
+
+	"github.com/spf13/cobra"
 )
 
 // apCmd represents the ap command
@@ -35,7 +36,7 @@ var apCmd = &cobra.Command{
 		fmt.Println("ap called")
 		title, _ := cmd.Flags().GetString("title")
 		participators, _ := cmd.Flags().GetStringArray("parti")
-		if  !user.IsLogin() {
+		if !user.IsLogin() {
 			fmt.Println("you have not logined yet")
 			os.Exit(1)
 		}
@@ -43,9 +44,19 @@ var apCmd = &cobra.Command{
 			fmt.Println("please input title")
 			os.Exit(2)
 		}
+		isUsersUnregistered := 0
+		for i := 0; i < len(participators); i++ {
+			if !user.IsRegisteredUser(participators[i]) {
+				isUsersUnregistered = 1
+				fmt.Println(participators[i] + " is not registered")
+			}
+		}
+		if isUsersUnregistered == 1 {
+			os.Exit(3)
+		}
 		if err := meeting.AddMeetingParticipators(title, participators); err != nil {
 			fmt.Println(err)
-			os.Exit(3)
+			os.Exit(4)
 		}
 	},
 }

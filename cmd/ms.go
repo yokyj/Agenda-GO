@@ -15,12 +15,13 @@
 package cmd
 
 import (
+	"Agenda-GO/entity/meeting"
+	"Agenda-GO/user"
 	"fmt"
 	"os"
 	"time"
+
 	"github.com/spf13/cobra"
-	"Agenda-GO/entity/meeting"
-	"Agenda-GO/user"
 )
 
 // msCmd represents the ms command
@@ -47,11 +48,15 @@ var msCmd = &cobra.Command{
 			fmt.Println("endtime can not be blank.The format is 2017-01-01 09:00")
 			os.Exit(3)
 		}
-		t1,_ := time.Parse("2006-01-02 15:04:05", stime)
-		t2,_ := time.Parse("2006-01-02 15:04:05", etime)
+		t1, _ := time.Parse("2006-01-02 15:04:05", stime)
+		t2, _ := time.Parse("2006-01-02 15:04:05", etime)
+		if !meeting.CheckStarttimelessthanEndtime(t1, t2) {
+			fmt.Println("start time should be less than end time")
+			os.Exit(4)
+		}
 		if err := meeting.QueryMeeting(t1, t2); err != nil {
 			fmt.Println(err)
-			os.Exit(4)
+			os.Exit(5)
 		}
 	},
 }
