@@ -1,13 +1,13 @@
 package meeting
 
 import (
+	"Agenda-GO/user"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"time"
-	"Agenda-GO/user"
 )
 
 type meeting_records struct {
@@ -82,11 +82,6 @@ func CreateMeeting(title string, participator []string, startTime time.Time, end
 		}
 	}
 	isOverlap := checkIfTwoMeetingTimeOverlap(title, participator, startTime, endTime)
-	/*
-		if isOverlap == 1 {
-			return errors.New("会议title已经被注册")
-		}
-	*/
 	if isOverlap == 2 {
 		return errors.New("会议时间有冲突")
 	}
@@ -97,11 +92,13 @@ func CreateMeeting(title string, participator []string, startTime time.Time, end
 	for i := 0; i < len(participator); i++ {
 		meetingToAdd.Participator = append(meetingToAdd.Participator, participator[i])
 	}
+	//将host加入participator
+	meetingToAdd.Participator = append(meetingToAdd.Participator, curUser)
 	meetingToAdd.StartTime = startTime
 	meetingToAdd.EndTime = endTime
-	fmt.Println("0:meetingtoadd", meetingToAdd)
+	//fmt.Println("0:meetingtoadd", meetingToAdd)
 	meetings = append(meetings, meetingToAdd)
-	fmt.Println("1:\n", meetings)
+	//fmt.Println("1:\n", meetings)
 	WriteMeetingInfo()
 	return nil
 }
@@ -109,9 +106,15 @@ func CreateMeeting(title string, participator []string, startTime time.Time, end
 //AddMeetingParticipators 增加会议参与者
 func AddMeetingParticipators(title string, participator []string) error {
 	var isMeetingExist = 0
+	fmt.Println(meetings)
 	for i := 0; i < len(meetings); i++ {
 		if meetings[i].Title == title {
 			//添加会议参与者
+			isMeetingExist = 1
+			//此会议不是当前用户发起
+			if curUser != meetings[i].Host {
+				return errors.New("此会议不是当前用户发起")
+			}
 			for j := 0; j < len(meetings[i].Participator); j++ {
 				for k := 0; k < len(participator); k++ {
 					if meetings[i].Participator[j] == participator[k] {
@@ -142,6 +145,11 @@ func DeleteMeetingParticipators(title string, participator []string) error {
 	var isMeetingExist = 0
 	for i := 0; i < len(meetings); i++ {
 		if meetings[i].Title == title {
+			isMeetingExist = 1
+			//此会议不是当前用户发起
+			if curUser != meetings[i].Host {
+				return errors.New("此会议不是当前用户发起")
+			}
 			var NumToDelete int
 			NumToDelete = 0
 			for j := 0; j < len(meetings[i].Participator); j++ {
@@ -166,10 +174,9 @@ func DeleteMeetingParticipators(title string, participator []string) error {
 			}
 			//如果删除参与者后会议人数为0，删除该会议
 			if len(partAfterDelete) == 0 {
-				CancelMeeting(title)
-			} else {
-				meetings[i].Participator = partAfterDelete
+				return CancelMeeting(title)
 			}
+			meetings[i].Participator = partAfterDelete
 		}
 	}
 	if isMeetingExist == 0 {
@@ -183,13 +190,26 @@ func DeleteMeetingParticipators(title string, participator []string) error {
 func QueryMeeting(startTime time.Time, endTime time.Time) error {
 	isOverlap := 0
 	for i := 0; i < len(meetings); i++ {
+		isCurUserInMeeting := 0
 		if checkIfMeetingTimeOverlap(meetings[i].StartTime, meetings[i].EndTime, startTime, endTime) {
-			isOverlap++
+			for j := 0; j < len(meetings[i].Participator); j++ {
+				if meetings[i].Participator[j] == curUser {
+					isOverlap++
+					isCurUserInMeeting = 1
+					break
+				}
+			}
+			if isCurUserInMeeting == 0 {
+				continue
+			}
+			fmt.Println(isOverlap)
 			if isOverlap == 1 {
 				fmt.Println("指定时间范围内找到的所有会议安排")
 				fmt.Println("会议主题：  起始时间：  终止时间：  发起者：  参与者：")
 			}
-			fmt.Printf("%v %v %v %v", meetings[i].Title, meetings[i].StartTime, meetings[i].EndTime, meetings[i].Host)
+			startTimeString := meetings[i].StartTime.Format("2006-01-02 15:04:05")
+			endTimeString := meetings[i].EndTime.Format("2006-01-02 15:04:05")
+			fmt.Printf("%v %v %v %v ", meetings[i].Title, startTimeString, endTimeString, meetings[i].Host)
 			for j := 0; j < len(meetings[i].Participator); j++ {
 				fmt.Printf("%v ", meetings[i].Participator[j])
 			}
@@ -205,6 +225,7 @@ func QueryMeeting(startTime time.Time, endTime time.Time) error {
 //CancelMeeting 取消会议
 func CancelMeeting(title string) error {
 	isMeetingExist := 0
+	fmt.Println("cancelmeet")
 	for i := 0; i < len(meetings); i++ {
 		if meetings[i].Title == title {
 			isMeetingExist = 1
@@ -212,6 +233,7 @@ func CancelMeeting(title string) error {
 				meetings = append(meetings[:i], meetings[i+1:]...)
 				break
 			} else {
+				fmt.Println("not host")
 				return errors.New("此会议的发起者并不是你")
 			}
 		}
@@ -235,7 +257,7 @@ func QuitMeeting(title string) error {
 					isAttendMeeting = 1
 					meetings[i].Participator = append(meetings[i].Participator[:j], meetings[i].Participator[j+1:]...)
 					if len(meetings[i].Participator) == 0 {
-						CancelMeeting(title)
+						return CancelMeeting(title)
 					}
 					break
 				}
@@ -266,8 +288,8 @@ func ClearAllMeeting() {
 
 //WriteMeetingInfo 将会议信息以JSON格式写入文件
 func WriteMeetingInfo() {
-	fmt.Println("2:\n", meetings)
-	fmt.Println("len:", len(meetings), "cap:", cap(meetings))
+	//fmt.Println("2:\n", meetings)
+	//fmt.Println("len:", len(meetings), "cap:", cap(meetings))
 
 	b, err := json.Marshal(meetings)
 	if err != nil {
@@ -281,7 +303,7 @@ func WriteMeetingInfo() {
 			}
 		}
 	*/
-	fmt.Println("b:\n", b)
+	//fmt.Println("b:\n", b)
 	/*
 		_, err = os.Open(writeFilePath)
 		if err != nil {
@@ -299,6 +321,14 @@ func SetCurrentUser(currentUser string) {
 	curUser = currentUser
 }
 
+//CheckStarttimelessthanEndtime 判断输入的startTime是否小于endTime
+func CheckStarttimelessthanEndtime(startTime time.Time, endTime time.Time) bool {
+	if startTime.After(endTime) {
+		return false
+	}
+	return true
+}
+
 func init() {
 	/*
 		meetings = make([]meeting_records, 5)
@@ -307,6 +337,7 @@ func init() {
 		}
 	*/
 	curUser = user.GetLogonUsername()
+	fmt.Println("curUser:", curUser)
 	_, err2 := os.Stat(writeFilePath)
 	if err2 == nil {
 		data, err := ioutil.ReadFile(writeFilePath)

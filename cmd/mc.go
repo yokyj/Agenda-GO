@@ -15,12 +15,13 @@
 package cmd
 
 import (
+	"Agenda-GO/entity/meeting"
+	"Agenda-GO/user"
 	"fmt"
 	"os"
 	"time"
+
 	"github.com/spf13/cobra"
-	"Agenda-GO/entity/meeting"
-	"Agenda-GO/user"
 )
 
 // mcCmd represents the mc command
@@ -30,14 +31,14 @@ var mcCmd = &cobra.Command{
 	Long: `to create a new meeting with title, participator,starttime and endtime.
 	 For example:
 
-./app mc -ttest -pPeter -pMarry -s"2017-10-28 09:30" -e"2017-10-28 10:30"`,
+./app mc -ttest -pPeter -pMarry -s"2017-10-28 09:30:00" -e"2017-10-28 10:30:00"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mc called")
 		title, _ := cmd.Flags().GetString("title")
 		participators, _ := cmd.Flags().GetStringArray("parti")
 		stime, _ := cmd.Flags().GetString("stime")
 		etime, _ := cmd.Flags().GetString("etime")
-		if  !user.IsLogin() {
+		if !user.IsLogin() {
 			fmt.Println("Login first!")
 			os.Exit(1)
 		}
@@ -53,22 +54,35 @@ var mcCmd = &cobra.Command{
 			fmt.Println("etime can not be blank")
 			os.Exit(4)
 		}
-		t1,_ := time.Parse("2006-01-02 15:04:05", stime)
-		t2,_ := time.Parse("2006-01-02 15:04:05", etime)
+		t1, _ := time.Parse("2006-01-02 15:04:05", stime)
+		t2, _ := time.Parse("2006-01-02 15:04:05", etime)
+		if !meeting.CheckStarttimelessthanEndtime(t1, t2) {
+			fmt.Println("start time should be less than end time")
+			os.Exit(5)
+		}
+		isUsersUnregistered := 0
+		for i := 0; i < len(participators); i++ {
+			if !user.IsRegisteredUser(participators[i]) {
+				isUsersUnregistered = 1
+				fmt.Println(participators[i] + " is not registered")
+			}
+		}
+		if isUsersUnregistered == 1 {
+			os.Exit(6)
+		}
 		if err := meeting.CreateMeeting(title, participators, t1, t2); err != nil {
 			fmt.Println(err)
-			os.Exit(5)
+			os.Exit(7)
 		}
 		//MeetingCreate(title, participators, stime, etime)
 		fmt.Println(title + " created")
-		
+
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(mcCmd)
 	var strarr []string
-	
 
 	// Here you will define your flags and configuration settings.
 
