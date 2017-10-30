@@ -23,18 +23,6 @@ var curUser string
 var isFileExist = true
 var writeFilePath = "./Json/MeetingInfo.json"
 
-//Meeting comment
-/*
-type Meeting struct {
-	CreateMeeting              func(title string, participator []string, startTime time.Time, endTime time.Time) error
-	ChangeMeetingParticipators func(title string, participator []string, action int) error
-	QueryMeeting               func(startTime time.Time, endTime time.Time) error
-	CancelMeeting              func(title string) error
-	QuitMeeting                func(title string) error
-	ClearAllMeeting            func()
-}
-*/
-
 //只是判断两个时间段是否overlap
 func checkIfMeetingTimeOverlap(meetingStartTime, meetingEndTime, startTime, endTime time.Time) bool {
 	if (meetingStartTime.Before(startTime) || meetingStartTime.Equal(startTime)) &&
@@ -68,7 +56,6 @@ func checkIfTwoMeetingTimeOverlap(title string, participator []string, startTime
 			for j := 0; j < len(*PeopleToCheck); j++ {
 				for k := 0; k < len(participator); k++ {
 					if (*PeopleToCheck)[j] == participator[k] {
-						//return 2
 						if firstOverlap == 0 {
 							firstOverlap = 1
 							errorInfo += "以下试图添加的参与者，参加了会议" + meetings[i].Title + "，该会议的时间与想要加入的会议" + title + "存在时间冲突\n"
@@ -80,7 +67,6 @@ func checkIfTwoMeetingTimeOverlap(title string, participator []string, startTime
 			}
 		}
 	}
-	//return 0
 	return checkNum, errorInfo
 }
 
@@ -94,13 +80,11 @@ func CreateMeeting(title string, participator []string, startTime time.Time, end
 	}
 	isOverlap, errorInfo := checkIfTwoMeetingTimeOverlap(title, append(participator, curUser), startTime, endTime)
 	if isOverlap == 2 {
-		//return errors.New("会议时间有冲突")
 		return errors.New(errorInfo)
 	}
 	var meetingToAdd meeting_records
 	meetingToAdd.Title = title
 	meetingToAdd.Host = curUser
-	//meetingToAdd.participator = make([]string, 5)
 	for i := 0; i < len(participator); i++ {
 		meetingToAdd.Participator = append(meetingToAdd.Participator, participator[i])
 	}
@@ -108,9 +92,7 @@ func CreateMeeting(title string, participator []string, startTime time.Time, end
 	meetingToAdd.Participator = append(meetingToAdd.Participator, curUser)
 	meetingToAdd.StartTime = startTime
 	meetingToAdd.EndTime = endTime
-	//fmt.Println("0:meetingtoadd", meetingToAdd)
 	meetings = append(meetings, meetingToAdd)
-	//fmt.Println("1:\n", meetings)
 	WriteMeetingInfo()
 	return nil
 }
@@ -138,7 +120,6 @@ func AddMeetingParticipators(title string, participator []string) error {
 			//还要做时间重叠判断（允许仅有端点重叠的情况）
 			isOverlap, errorInfo := checkIfTwoMeetingTimeOverlap(title, participator, meetings[i].StartTime, meetings[i].EndTime)
 			if isOverlap == 2 {
-				//return errors.New("新增会议参与者和某个会议时间冲突")
 				return errors.New(errorInfo)
 			}
 			for j := 0; j < len(participator); j++ {
@@ -179,7 +160,6 @@ func DeleteMeetingParticipators(title string, participator []string) error {
 				}
 			}
 			if NumToDelete < len(participator) {
-				//return errors.New("想要删除的用户不存在")
 				return errors.New(errorInfo)
 			}
 			//删除用户
@@ -308,28 +288,10 @@ func ClearAllMeeting() {
 
 //WriteMeetingInfo 将会议信息以JSON格式写入文件
 func WriteMeetingInfo() {
-	//fmt.Println("2:\n", meetings)
-	//fmt.Println("len:", len(meetings), "cap:", cap(meetings))
-
 	b, err := json.Marshal(meetings)
 	if err != nil {
 		panic(err)
 	}
-	/*
-		if !isFileExist {
-			_, err2 := os.Create("MeetingInfo")
-			if err2 != nil {
-				panic(err2)
-			}
-		}
-	*/
-	//fmt.Println("b:\n", b)
-	/*
-		_, err = os.Open(writeFilePath)
-		if err != nil {
-			os.Create(writeFilePath)
-		}
-	*/
 	err = ioutil.WriteFile(writeFilePath, b, 0644)
 	if err != nil {
 		panic(err)
@@ -350,12 +312,6 @@ func CheckStarttimelessthanEndtime(startTime time.Time, endTime time.Time) bool 
 }
 
 func init() {
-	/*
-		meetings = make([]meeting_records, 5)
-		for i := 0; i < len(meetings); i++ {
-			meetings[i].participator = make([]string, 5)
-		}
-	*/
 	curUser = user.GetLogonUsername()
 	fmt.Println("curUser:", curUser)
 	_, err2 := os.Stat(writeFilePath)
@@ -375,5 +331,4 @@ func init() {
 			fmt.Println(errors.New("保存会议信息的文件打开失败"))
 		}
 	}
-	//fmt.Println("readfile:\n", meetings)
 }
