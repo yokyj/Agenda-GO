@@ -2,3 +2,7 @@ Command: LogoutUser
 
 User:123  Command: LoginUser
 
+Command:LogoutUser
+
+User:123  Command:LoginUser
+
