@@ -18,8 +18,11 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+<<<<<<< HEAD
 	"Agenda-GO/entity/meeting"
 	"Agenda-GO/user"
+=======
+>>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 )
 
 // mclrCmd represents the mclr command
@@ -32,11 +35,22 @@ var mclrCmd = &cobra.Command{
 ./app mclr`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mclr called")
+<<<<<<< HEAD
 		if !user.IsLogin() {
 			fmt.Println("please login first!")
 			os.Exit(1)
 		}
 		meeting.ClearAllMeeting()
+=======
+		if !IsLogin() {
+			fmt.Println("please login first!")
+			os.Exit(1)
+		}
+		if err := ClearAllMeeting(); err != nil {
+			
+			os.Exit(2)
+		}
+>>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	},
 }
 

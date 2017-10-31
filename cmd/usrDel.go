@@ -18,7 +18,10 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
+<<<<<<< HEAD
 	"Agenda-GO/user"
+=======
+>>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 )
 
 // usrDelCmd represents the usrDel command
@@ -31,14 +34,23 @@ var usrDelCmd = &cobra.Command{
 ./app usrDel`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("usrDel called")
+<<<<<<< HEAD
 		if !user.IsLogin() {
+=======
+		if !IsLogin() {
+>>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 			fmt.Println("you have not logined yet.")
 			os.Exit(1)
 		}
 		
+<<<<<<< HEAD
 		if err := user.DeleteUser(); err != nil {
 			// fmt.Println("error happened.")
 			fmt.Println(err)
+=======
+		if err := DeleteUser(); err != nil {
+			// fmt.Println("error happened.")
+>>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 			os.Exit(2)
 		}
 		fmt.Println("user is canceled successfully.")
