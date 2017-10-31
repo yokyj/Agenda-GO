@@ -1,0 +1,22 @@
+Command: LogoutUser
+
+User:123  Command: LoginUser
+
+Command:LogoutUser
+
+User:123  Command:LoginUser
+
+Command:RegisterUser
+To:{Name:123  Email:123  Phone:123321}
+
+Command:LogoutUser
+
+User:123  Command:LoginUser
+
+Command:LogoutUser
+
+User:123  Command:LoginUser
+
+User:123  Command:CreateMeeting
+To:{Title:Test  Host:123  Participor:KYJ hpz 123  Begin Time:2017-10-29 09:30:00  End Time:2017-10-29 10:30:01}
+
