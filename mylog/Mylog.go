@@ -15,7 +15,7 @@ func getFileHandle() *os.File {
 	}
 
 	// 以追加模式打开文件,并向文件写入
-	fi, _ := os.OpenFile(logDivPath+logFilePath, os.O_APPEND, 0)
+	fi, _ := os.OpenFile(logDivPath+logFilePath, os.O_RDWR|os.O_APPEND, 0)
 	return fi
 }
 
@@ -25,10 +25,15 @@ func AddLog(user string, command string, oldStr string, newStr string) {
 	if user != "" {
 		fmt.Fprintf(file, "User:%s  ", user)
 	}
-	fmt.Fprintf(file, "Command: %s\n", command)
-	if oldStr != "" {
-		fmt.Fprintf(file, "From:%s\nTo:", oldStr)
+	if command != "" {
+		fmt.Fprintf(file, "Command:%s\n", command)
 	}
-	fmt.Fprintf(file, "%s\n\n", newStr)
+	if oldStr != "" {
+		fmt.Fprintf(file, "From:%s\n", oldStr)
+	}
+	if newStr != "" {
+		fmt.Fprintf(file, "To:%s\n", newStr)
+	}
+	fmt.Fprintf(file, "\n")
 	file.Close()
 }
