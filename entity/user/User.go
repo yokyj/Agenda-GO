@@ -11,8 +11,8 @@ import (
 	"os"
 )
 
-const userItemsFilePath string = "./Json/UserItems.json"
-const currentUserFilePath string = "./Json/Current.txt"
+var userItemsFilePath = "./Json/UserItems.json"
+var currentUserFilePath = "./Json/Current.txt"
 
 type userItem struct {
 	// 用户名字
@@ -27,6 +27,8 @@ type userItem struct {
 
 func init() {
 	// 初始化
+	//userItemsFilePath = filepath.Join(os.Getenv("GOPATH"), userItemsFilePath)
+	//currentUserFilePath = filepath.Join(os.Getenv("GOPATH"), currentUserFilePath)
 	userItems = make(map[string](userItem))
 	CurrentUser = nil
 	readJSON()
@@ -218,5 +220,5 @@ func writeJSON() {
 }
 
 func (u userItem) String() string {
-	return "Name:" + u.Name + "  Email:" + u.Email + "  Phone:" + u.PhoneNumber
+	return "{Name:" + u.Name + "  Email:" + u.Email + "  Phone:" + u.PhoneNumber + "}"
 }
