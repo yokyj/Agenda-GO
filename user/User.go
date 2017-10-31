@@ -1,4 +1,4 @@
-package main
+package user
 
 import (
 	"crypto/md5"
@@ -10,8 +10,8 @@ import (
 	"os"
 )
 
-const userItemsFilePath string = "Json/UserItems.json"
-const currentUserFilePath string = "Json/Current.txt"
+const userItemsFilePath string = "./Json/UserItems.json"
+const currentUserFilePath string = "./Json/Current.txt"
 
 type userItem struct {
 	// 用户名字
@@ -113,6 +113,7 @@ func RegisterUser(name string, password string,
 		return errors.New("ERROR:The user has registered")
 	}
 	userItems[name] = *newUser(name, password, email, phoneNumber)
+
 	writeJSON()
 	return nil
 }
@@ -226,11 +227,12 @@ func readJSON() {
 func writeJSON() {
 	// 写入userItems
 	b1, err1 := json.Marshal(userItems)
+	
 	if err1 == nil {
 		if _, err := os.Open(userItemsFilePath); err != nil {
 			os.Create(userItemsFilePath)
 		}
-		ioutil.WriteFile(userItemsFilePath, b1, 0644)
+		ioutil.WriteFile(userItemsFilePath, b1, 0755)
 	}
 
 	// 写入CurrentUser
@@ -243,6 +245,6 @@ func writeJSON() {
 		if _, err := os.Open(currentUserFilePath); err != nil {
 			os.Create(currentUserFilePath)
 		}
-		ioutil.WriteFile(currentUserFilePath, b2, 0644)
+		ioutil.WriteFile(currentUserFilePath, b2, 0755)
 	}
 }
