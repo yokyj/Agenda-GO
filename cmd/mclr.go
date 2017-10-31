@@ -15,11 +15,12 @@
 package cmd
 
 import (
+	"Agenda-GO/entity/meeting"
+	"Agenda-GO/entity/user"
 	"fmt"
 	"os"
+
 	"github.com/spf13/cobra"
-	"Agenda-GO/entity/meeting"
-	"Agenda-GO/user"
 )
 
 // mclrCmd represents the mclr command

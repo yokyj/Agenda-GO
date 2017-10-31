@@ -15,11 +15,12 @@
 package cmd
 
 import (
+	"Agenda-GO/entity/meeting"
+	"Agenda-GO/entity/user"
 	"fmt"
 	"os"
+
 	"github.com/spf13/cobra"
-	"Agenda-GO/entity/meeting"
-	"Agenda-GO/user"
 )
 
 // mccCmd represents the mcc command
@@ -32,7 +33,7 @@ For example:
 ./app mcc -ttitle`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mcc called")
-		title,_ := cmd.Flags().GetString("title")
+		title, _ := cmd.Flags().GetString("title")
 		if !user.IsLogin() {
 			fmt.Println("Please login first!")
 			os.Exit(1)

@@ -1,7 +1,7 @@
 package meeting
 
 import (
-	"Agenda-GO/user"
+	"Agenda-GO/entity/user"
 	"encoding/json"
 	"errors"
 	"fmt"

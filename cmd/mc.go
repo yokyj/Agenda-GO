@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"Agenda-GO/entity/meeting"
-	"Agenda-GO/user"
+	"Agenda-GO/entity/user"
 	"fmt"
 	"os"
 	"time"

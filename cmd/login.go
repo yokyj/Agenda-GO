@@ -15,10 +15,11 @@
 package cmd
 
 import (
+	"Agenda-GO/entity/user"
 	"fmt"
 	"os"
+
 	"github.com/spf13/cobra"
-	"Agenda-GO/user"
 )
 
 // loginCmd represents the login command
@@ -45,7 +46,7 @@ var loginCmd = &cobra.Command{
 			os.Exit(3)
 		}
 		if !user.IsRegisteredUser(username) {
-			fmt.Println(username +" is not registered.")
+			fmt.Println(username + " is not registered.")
 			os.Exit(4)
 		}
 		if err := user.LoginUser(username, password); err != nil {

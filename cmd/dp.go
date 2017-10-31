@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"Agenda-GO/entity/meeting"
-	"Agenda-GO/user"
+	"Agenda-GO/entity/user"
 	"fmt"
 	"os"
 
@@ -27,7 +27,7 @@ import (
 var dpCmd = &cobra.Command{
 	Use:   "dp",
 	Short: "to delete some participators to a meeting",
-	Long: `to delete some participators to a meeting with 
+	Long: `to delete some participators to a meeting with
 	the title of the meeting and the name of the new participators.
 	 For example:
 

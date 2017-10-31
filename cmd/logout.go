@@ -15,10 +15,11 @@
 package cmd
 
 import (
+	"Agenda-GO/entity/user"
 	"fmt"
 	"os"
+
 	"github.com/spf13/cobra"
-	"Agenda-GO/user"
 )
 
 // logoutCmd represents the logout command
@@ -40,7 +41,7 @@ var logoutCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(2)
 		}
-		
+
 	},
 }
 
