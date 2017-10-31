@@ -1,6 +1,7 @@
 package user
 
 import (
+	"Agenda-GO/mylog"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
@@ -30,49 +31,6 @@ func init() {
 	CurrentUser = nil
 	readJSON()
 }
-
-// 测试部分
-/*
-func main() {
-	//IsLogInOutTest()
-	RegisterUserTest()
-	//IsRegisteredUserTest()
-	//DeleteUserTest()
-}
-
-func IsLogInOutTest() {
-	fmt.Println("Test IsLogin():")
-	fmt.Println(IsLogin())
-	LoginUser("huziang", "123456")
-	fmt.Println(IsLogin())
-	LogoutUser()
-	fmt.Println(IsLogin())
-}
-func RegisterUserTest() {
-	fmt.Println("Test RegisterUser():")
-	err := RegisterUser("huziang", "123456", "3254266353@qq.com", "13719316539")
-	fmt.Println(err)
-	err = RegisterUser("houhongxiao", "123645", "325423@qq.com", "12321331213")
-	fmt.Println(err)
-	LoginUser("huziang", "123456")
-	ListUsers()
-}
-
-func IsRegisteredUserTest() {
-	fmt.Println("Test IsRegisteredUser():")
-	fmt.Println(IsRegisteredUser("houhongxiao"))
-}
-
-func DeleteUserTest() {
-	err := LoginUser("huziang", "123456")
-	fmt.Println(err)
-	DeleteUser()
-	err = LoginUser("houhongxiao", "123645")
-	fmt.Println(err)
-	ListUsers()
-	LogoutUser()
-}
-*/
 
 // 新建一个userItem，并返回指针
 func newUser(name string, password string,
@@ -115,6 +73,7 @@ func RegisterUser(name string, password string,
 	userItems[name] = *newUser(name, password, email, phoneNumber)
 
 	writeJSON()
+	mylog.AddLog("", "RegisterUser", "", userItems[name].String())
 	return nil
 }
 
@@ -140,6 +99,7 @@ func LoginUser(name string, password string) error {
 	// 成功登录
 	CurrentUser = &tempUser
 	writeJSON()
+	mylog.AddLog(GetLogonUsername(), "LoginUser", "", "")
 	fmt.Println("Hi " + name + "!")
 	return nil
 }
@@ -152,6 +112,7 @@ func LogoutUser() error {
 
 	CurrentUser = nil
 	writeJSON()
+	mylog.AddLog(GetLogonUsername(), "LogoutUser", "", "")
 	fmt.Println("Logout successfully!")
 	return nil
 }
@@ -179,6 +140,7 @@ func ListUsers() error {
 	// 输出结尾
 	outputStr += "All user listed as follow.\n"
 	fmt.Printf("%s", outputStr)
+	mylog.AddLog(GetLogonUsername(), "ListUsers", "", "")
 	return nil
 }
 
@@ -190,6 +152,7 @@ func DeleteUser() error {
 	}
 
 	delete(userItems, CurrentUser.Name)
+	mylog.AddLog(GetLogonUsername(), "DeleteUser", (*CurrentUser).String(), "")
 	CurrentUser = nil
 	writeJSON()
 	return nil
@@ -227,7 +190,7 @@ func readJSON() {
 func writeJSON() {
 	// 写入userItems
 	b1, err1 := json.Marshal(userItems)
-	
+
 	if err1 == nil {
 		if _, err := os.Open(userItemsFilePath); err != nil {
 			os.Create(userItemsFilePath)
@@ -247,4 +210,8 @@ func writeJSON() {
 		}
 		ioutil.WriteFile(currentUserFilePath, b2, 0755)
 	}
+}
+
+func (u userItem) String() string {
+	return "Name:" + u.Name + "  Email:" + u.Email + "  Phone:" + u.PhoneNumber
 }
