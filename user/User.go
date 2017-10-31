@@ -1,13 +1,7 @@
-<<<<<<< HEAD
 package user
 
 import (
 	"Agenda-GO/mylog"
-=======
-package main
-
-import (
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
@@ -17,13 +11,8 @@ import (
 	"os"
 )
 
-<<<<<<< HEAD
 const userItemsFilePath string = "./Json/UserItems.json"
 const currentUserFilePath string = "./Json/Current.txt"
-=======
-const userItemsFilePath string = "data/UserItems.json"
-const currentUserFilePath string = "data/Current.txt"
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 
 type userItem struct {
 	// 用户名字
@@ -43,52 +32,6 @@ func init() {
 	readJSON()
 }
 
-<<<<<<< HEAD
-=======
-// 测试部分
-/*
-func main() {
-	//IsLogInOutTest()
-	RegisterUserTest()
-	//IsRegisteredUserTest()
-	//DeleteUserTest()
-}
-
-func IsLogInOutTest() {
-	fmt.Println("Test IsLogin():")
-	fmt.Println(IsLogin())
-	LoginUser("huziang", "123456")
-	fmt.Println(IsLogin())
-	LogoutUser()
-	fmt.Println(IsLogin())
-}
-func RegisterUserTest() {
-	fmt.Println("Test RegisterUser():")
-	err := RegisterUser("DJG", "123456", "3254266353@qq.com", "13719316539")
-	fmt.Println(err)
-	//err = RegisterUser("houhongxiao", "123645", "325423@qq.com", "12321331213")
-	//fmt.Println(err)
-	//LoginUser("DJG", "123456")
-	//ListUsers()
-}
-
-func IsRegisteredUserTest() {
-	fmt.Println("Test IsRegisteredUser():")
-	fmt.Println(IsRegisteredUser("houhongxiao"))
-}
-
-func DeleteUserTest() {
-	err := LoginUser("huziang", "123456")
-	fmt.Println(err)
-	DeleteUser()
-	err = LoginUser("houhongxiao", "123645")
-	fmt.Println(err)
-	ListUsers()
-	LogoutUser()
-}
-*/
-
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 // 新建一个userItem，并返回指针
 func newUser(name string, password string,
 	email string, phoneNumber string) *userItem {
@@ -128,13 +71,8 @@ func RegisterUser(name string, password string,
 		return errors.New("ERROR:The user has registered")
 	}
 	userItems[name] = *newUser(name, password, email, phoneNumber)
-<<<<<<< HEAD
-
 	writeJSON()
 	mylog.AddLog("", "RegisterUser", "", userItems[name].String())
-=======
-	writeJSON()
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	return nil
 }
 
@@ -160,10 +98,7 @@ func LoginUser(name string, password string) error {
 	// 成功登录
 	CurrentUser = &tempUser
 	writeJSON()
-<<<<<<< HEAD
 	mylog.AddLog(GetLogonUsername(), "LoginUser", "", "")
-=======
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	fmt.Println("Hi " + name + "!")
 	return nil
 }
@@ -176,10 +111,7 @@ func LogoutUser() error {
 
 	CurrentUser = nil
 	writeJSON()
-<<<<<<< HEAD
 	mylog.AddLog(GetLogonUsername(), "LogoutUser", "", "")
-=======
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	fmt.Println("Logout successfully!")
 	return nil
 }
@@ -207,10 +139,9 @@ func ListUsers() error {
 	// 输出结尾
 	outputStr += "All user listed as follow.\n"
 	fmt.Printf("%s", outputStr)
-<<<<<<< HEAD
+
 	mylog.AddLog(GetLogonUsername(), "ListUsers", "", "")
-=======
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
+
 	return nil
 }
 
@@ -222,10 +153,9 @@ func DeleteUser() error {
 	}
 
 	delete(userItems, CurrentUser.Name)
-<<<<<<< HEAD
+
 	mylog.AddLog(GetLogonUsername(), "DeleteUser", (*CurrentUser).String(), "")
-=======
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
+
 	CurrentUser = nil
 	writeJSON()
 	return nil
@@ -263,22 +193,10 @@ func readJSON() {
 func writeJSON() {
 	// 写入userItems
 	b1, err1 := json.Marshal(userItems)
-<<<<<<< HEAD
-
-=======
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	if err1 == nil {
 		if _, err := os.Open(userItemsFilePath); err != nil {
 			os.Create(userItemsFilePath)
 		}
-<<<<<<< HEAD
-		ioutil.WriteFile(userItemsFilePath, b1, 0755)
-	}
-
-	// 写入CurrentUser
-	if CurrentUser == nil {
-		os.Remove(currentUserFilePath)
-=======
 		ioutil.WriteFile(userItemsFilePath, b1, 0644)
 	}
 
@@ -288,7 +206,6 @@ func writeJSON() {
 		if _, err := os.Open(currentUserFilePath); err == nil {
 			os.Remove(currentUserFilePath)
 		}
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 		return
 	}
 	b2, err2 := json.Marshal(*CurrentUser)
@@ -296,16 +213,10 @@ func writeJSON() {
 		if _, err := os.Open(currentUserFilePath); err != nil {
 			os.Create(currentUserFilePath)
 		}
-<<<<<<< HEAD
 		ioutil.WriteFile(currentUserFilePath, b2, 0755)
 	}
 }
 
 func (u userItem) String() string {
 	return "Name:" + u.Name + "  Email:" + u.Email + "  Phone:" + u.PhoneNumber
-=======
-		ioutil.WriteFile(currentUserFilePath, b2, 0644)
-	}
-
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 }

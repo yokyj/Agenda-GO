@@ -15,17 +15,12 @@
 package cmd
 
 import (
-<<<<<<< HEAD
 	"Agenda-GO/entity/meeting"
 	"Agenda-GO/user"
 	"fmt"
 	"os"
 	"time"
 
-=======
-	"fmt"
-	"os"
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	"github.com/spf13/cobra"
 )
 
@@ -41,11 +36,7 @@ var msCmd = &cobra.Command{
 		fmt.Println("ms called")
 		stime, _ := cmd.Flags().GetString("stime")
 		etime, _ := cmd.Flags().GetString("etime")
-<<<<<<< HEAD
 		if !user.IsLogin() {
-=======
-		if !IsLogin() {
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 			fmt.Println("Please login first!")
 			os.Exit(1)
 		}
@@ -57,7 +48,6 @@ var msCmd = &cobra.Command{
 			fmt.Println("endtime can not be blank.The format is 2017-01-01 09:00")
 			os.Exit(3)
 		}
-<<<<<<< HEAD
 		t1, _ := time.Parse("2006-01-02 15:04:05", stime)
 		t2, _ := time.Parse("2006-01-02 15:04:05", etime)
 		if !meeting.CheckStarttimelessthanEndtime(t1, t2) {
@@ -68,12 +58,6 @@ var msCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(5)
 		}
-=======
-		if err := QueryMeeting(stime, etime); err != nil {
-
-			os.Exit(4)
-		}
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	},
 }
 

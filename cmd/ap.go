@@ -15,16 +15,11 @@
 package cmd
 
 import (
-<<<<<<< HEAD
 	"Agenda-GO/entity/meeting"
 	"Agenda-GO/user"
 	"fmt"
 	"os"
 
-=======
-	"fmt"
-	"os"
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	"github.com/spf13/cobra"
 )
 
@@ -41,11 +36,7 @@ var apCmd = &cobra.Command{
 		fmt.Println("ap called")
 		title, _ := cmd.Flags().GetString("title")
 		participators, _ := cmd.Flags().GetStringArray("parti")
-<<<<<<< HEAD
 		if !user.IsLogin() {
-=======
-		if  !IsLogin() {
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 			fmt.Println("you have not logined yet")
 			os.Exit(1)
 		}
@@ -53,7 +44,6 @@ var apCmd = &cobra.Command{
 			fmt.Println("please input title")
 			os.Exit(2)
 		}
-<<<<<<< HEAD
 		isUsersUnregistered := 0
 		for i := 0; i < len(participators); i++ {
 			if !user.IsRegisteredUser(participators[i]) {
@@ -68,12 +58,6 @@ var apCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(4)
 		}
-=======
-		if err := AddMeetingParticipators(); err != nil {
-			
-			os.Exit(3)
-		}
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 	},
 }
 

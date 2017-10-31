@@ -18,10 +18,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
-<<<<<<< HEAD
 	"Agenda-GO/user"
-=======
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 )
 
 // logoutCmd represents the logout command
@@ -34,7 +31,6 @@ var logoutCmd = &cobra.Command{
 ./app logout`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("logout called")
-<<<<<<< HEAD
 		if !user.IsLogin() {
 			fmt.Println("You have not logined yet.")
 			os.Exit(1)
@@ -42,14 +38,6 @@ var logoutCmd = &cobra.Command{
 		if err := user.LogoutUser(); err != nil {
 			// fmt.Println("error happened!!")
 			fmt.Println(err)
-=======
-		if !IsLogin() {
-			fmt.Println("You have not logined yet.")
-			os.Exit(1)
-		}
-		if err := LogoutUser(); err != nil {
-			// fmt.Println("error happened!!")
->>>>>>> 015ad6e43e4e87e3f14180abcf8579d3401169b1
 			os.Exit(2)
 		}
 		
